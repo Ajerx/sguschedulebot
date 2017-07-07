@@ -25,7 +25,7 @@ class sqldb:
 
     def select_course_by_department(self, department):
         with self.connection:
-            self.cursor.execute('SELECT DISTINCT course_rus, course_eng FROM groups WHERE dep_eng = %s;', (department,))
+            self.cursor.execute('SELECT DISTINCT course_rus, course_eng FROM groups WHERE dep_eng = %s ORDER BY course_rus;', (department,))
             data = self.cursor.fetchall()
             return data
 
