@@ -1,27 +1,37 @@
-import sqlite3
 import xmlparser
+import psycopg2
+import urllib.parse as urlparse
 
 class sqldb:
 
     def __init__(self, database):
-        self.connection = sqlite3.connect(database)
+
+        url = urlparse.urlparse(database)
+
+        self.connection = psycopg2.connect(
+            database=url.path[1:],
+            user=url.username,
+            password=url.password,
+            host=url.hostname,
+            port=url.port
+        )
         self.cursor = self.connection.cursor()
 
     def select_url_groups_by_department_and_course(self, department, course):
         with self.connection:
-            self.cursor.execute('SELECT url, group_rus FROM groups WHERE dep_eng = ? AND course_eng = ?;', (department, course))
+            self.cursor.execute('SELECT url, group_rus FROM groups WHERE dep_eng = %s AND course_eng = %s;', (department, course))
             data = self.cursor.fetchall()
             return data
 
     def select_course_by_department(self, department):
         with self.connection:
-            self.cursor.execute('SELECT DISTINCT course_rus, course_eng FROM groups WHERE dep_eng = ?;', (department,))
+            self.cursor.execute('SELECT DISTINCT course_rus, course_eng FROM groups WHERE dep_eng = %s;', (department,))
             data = self.cursor.fetchall()
             return data
 
     def select_by_url(self, url):
         with self.connection:
-            self.cursor.execute('SELECT dep_rus, group_rus, dep_eng FROM groups WHERE url = ?;', (url,))
+            self.cursor.execute('SELECT dep_rus, group_rus, dep_eng FROM groups WHERE url = %s;', (url,))
             data = self.cursor.fetchone()
             return data
 
@@ -44,8 +54,7 @@ class sqldb:
     def check_user(self, user_id):
         """ Проверяем, есть ли пользователь с таким id в базе """
         with self.connection:
-            self.cursor.execute('SELECT * FROM users WHERE id = ?;', (user_id,))
-
+            self.cursor.execute('SELECT * FROM users WHERE id = %s;', (user_id,))
             data = self.cursor.fetchone()
             if data is None:
                 return False
@@ -58,7 +67,7 @@ class sqldb:
         department_and_group = self.select_by_url(url)[0:2]
 
         with self.connection:
-            self.cursor.execute("INSERT INTO users VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            self.cursor.execute("INSERT INTO users VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);",
                                 (user_id, name, *department_and_group, *schedule_for_week, url))
             self.connection.commit()
 
@@ -67,25 +76,25 @@ class sqldb:
 
         department_and_group = self.select_by_url(url)[0:2]
         with self.connection:
-            self.cursor.execute("UPDATE users SET dep_eng = ?, group_id = ?, monday = ?,"
-                                "tuesday = ?, wednesday = ?,"
-                                " thursday = ?, friday = ?, saturday = ?, sunday = ?, url = ? WHERE id = ?;",
+            self.cursor.execute("UPDATE users SET dep_eng = %s, group_id = %s, monday = %s,"
+                                "tuesday = %s, wednesday = %s,"
+                                " thursday = %s, friday = %s, saturday = %s, sunday = %s, url = %s WHERE id = %s;",
                                 (*department_and_group, *schedule_for_week, url, user_id))
             self.connection.commit()
 
     def get_schedule(self, user_id, dayweek):
         dayweeks = {0:'monday', 1:'tuesday', 2:'wednesday', 3:'thursday', 4:'friday', 5:'saturday', 6:'sunday'}
         with self.connection:
-            self.cursor.execute("SELECT {} FROM users WHERE id = ?;".format(dayweeks[dayweek]), (user_id,))
+            self.cursor.execute("SELECT {} FROM users WHERE id = %s;".format(dayweeks[dayweek]), (user_id,))
             schedule = self.cursor.fetchall()
             return schedule
 
     def update_schedule_by_url(self, url):
         schedule_for_week = xmlparser.getschedule(url)
         with self.connection:
-            self.cursor.execute("UPDATE users SET monday = ?,"
-                                "tuesday = ?, wednesday = ?,"
-                                " thursday = ?, friday = ?, saturday = ?, sunday = ? WHERE url = ?;",
+            self.cursor.execute("UPDATE users SET monday = %s,"
+                                "tuesday = %s, wednesday = %s,"
+                                " thursday = %s, friday = %s, saturday = %s, sunday = %s WHERE url = %s;",
                                 (*schedule_for_week, url))
             self.connection.commit()
 
@@ -109,7 +118,7 @@ class sqldb:
             self.cursor.executemany('''
 
             INSERT INTO groups (url, group_rus, course_rus, course_eng, dep_rus, dep_eng) VALUES
-            (?, ?, ?, ?, ?, ?)
+            (%s, %s, %s, %s, %s, %s);
             ''', completedata)
 
             self.connection.commit()

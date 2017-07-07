@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 from urllib import request
 import dbconn
+import config
+
 departments = {'bf': 'БИО',
                    'gf': 'ГЕОГР', 'gl': 'ГЕОЛ', 'ii': 'ИН.ИСК.', 'imo': 'ИИМО',
                    'ifk': 'ФКИС', 'ifg': 'ИФИЖ',  'ih': 'ИН.ХИМ.',
@@ -17,7 +19,7 @@ courses = {'1 курс':'1course', '2 курс':'2course',
 
 def get_groups(): # get all groups from parsed site
 
-    db = dbconn.sqldb('departments.db')
+    db = dbconn.sqldb(config.database)
 
     db.delete_from_groups()
 

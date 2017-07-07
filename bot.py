@@ -34,7 +34,7 @@ def send_welcome(message):
 
 @bot.message_handler(regexp='^📚 Узнать расписание$')
 def send_msg(message):
-    db = dbconn.sqldb('departments.db')
+    db = dbconn.sqldb(config.database)
     if not db.check_user(message.chat.id):
         bot.send_message(message.chat.id, 'Я еще не знаю номер вашей группы.\nНажмите на кнопку "📝 Сменить группу", чтобы задать его.')
     else:
@@ -74,7 +74,7 @@ def callback_inline(call):
 
     #call.data is a department
 
-    db = dbconn.sqldb('departments.db')
+    db = dbconn.sqldb(config.database)
 
     keyboard = types.InlineKeyboardMarkup(row_width=3)
     k = []
@@ -87,12 +87,12 @@ def callback_inline(call):
 
 @bot.callback_query_handler(func=lambda msg: msg.data in
                                              [i + '+' + course for course in
-                                              dbconn.sqldb('departments.db').select_distinct_course() for i in
+                                              dbconn.sqldb(config.database).select_distinct_course() for i in
                                               soup.departments.keys()]) #choose group
 def callback_date(call):
     keyboard = types.InlineKeyboardMarkup(row_width=3)
     groups = []
-    for url, group_rus in dbconn.sqldb('departments.db').select_url_groups_by_department_and_course(call.data.split('+')[0], call.data.split('+')[1]):
+    for url, group_rus in dbconn.sqldb(config.database).select_url_groups_by_department_and_course(call.data.split('+')[0], call.data.split('+')[1]):
         groups.append(types.InlineKeyboardButton(text="{}".format(group_rus), callback_data="{}".format(url)))
     keyboard.add(*groups)
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Выберите группу:")
@@ -107,7 +107,7 @@ def callback_date(call):
     dayweeks_eng_rus = {'monday': 'понедельник', 'tuesday': 'вторник',
                     'wednesday': 'среду', 'thursday': 'четверг', 'friday': 'пятницу', 'saturday': 'субботу', 'sunday': 'воскресенье'}
 
-    db = dbconn.sqldb('departments.db')
+    db = dbconn.sqldb(config.database)
     if call.data == 'today':
         bot.edit_message_text(chat_id=call.message.chat.id,  message_id=call.message.message_id, text =
                          '*Сегодня {0}, {1}.\n\nТекущая неделя – {2}.\n\n*Ваше расписание:\n\n'.format(
@@ -158,9 +158,9 @@ def callback_date(call):
                          + db.get_schedule(call.message.chat.id, dayweeks_eng_number[call.data])[0][0],
                          parse_mode='Markdown')
 
-@bot.callback_query_handler(func=lambda msg: msg.data in dbconn.sqldb('departments.db').select_url_from_groups())  # confirm group
+@bot.callback_query_handler(func=lambda msg: msg.data in dbconn.sqldb(config.database).select_url_from_groups())  # confirm group
 def callback_date(call):
-    db = dbconn.sqldb('departments.db')
+    db = dbconn.sqldb(config.database)
 
     dep_and_group = db.select_by_url(call.data)
 

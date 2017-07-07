@@ -1,7 +1,18 @@
-import sqlite3
+import psycopg2
+import config
+import urllib.parse as urlparse
 
 def createtables():
-    connection = sqlite3.connect('departments.db')
+
+    url = urlparse.urlparse(config.database)
+
+    connection = psycopg2.connect(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port
+    )
     cursor = connection.cursor()
 
     cursor.execute('''
@@ -10,7 +21,8 @@ def createtables():
     connection.commit()
 
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT, dep_eng TEXT, group_id INTEGER, monday TEXT,
+        CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT, dep_eng TEXT, group_id TEXT, monday TEXT,
          tuesday TEXT, wednesday TEXT, thursday TEXT, friday TEXT, saturday TEXT, sunday TEXT, url TEXT);
     ''')
     connection.commit()
+    connection.close()

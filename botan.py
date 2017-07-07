@@ -11,10 +11,7 @@ def make_json(message):
     data['from']['id'] = message.from_user.id
     data['from']['name'] = message.from_user.first_name + ("" if message.from_user.last_name is None else " " + message.from_user.last_name) +\
                            ("" if message.from_user.username is None else " " + message.from_user.username)
-    # if message.from_user.username is not None:
-    #     data['from']['username'] = message.from_user.username
     data['chat'] = {}
-    # Chat.Id используется в обоих типах чатов
     data['chat']['id'] = message.chat.id
     return data
 

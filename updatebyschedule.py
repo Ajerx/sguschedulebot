@@ -3,6 +3,7 @@ import os
 import requests
 import dbconn
 import soup
+import config
 
 
 def sched():
@@ -27,7 +28,7 @@ def sched():
                         f.write(response.content)
 
         # update users table
-        db = dbconn.sqldb('departments.db')
+        db = dbconn.sqldb(config.database)
 
         users_urls = db.get_urls_from_users()
         group_urls = db.select_url_from_groups()
