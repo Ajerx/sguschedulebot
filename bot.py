@@ -170,7 +170,8 @@ def callback_date(call):
                                 call.data)
     else:
         db.insert_user_schedule(call.message.chat.id,
-                                call.from_user.first_name + ("" if call.from_user.last_name is None else " " + call.from_user.last_name),
+                                сall.from_user.first_name + ("" if call.from_user.last_name is None else " " + call.from_user.last_name) +\
+                           		("" if call.from_user.username is None else " " + call.from_user.username),
                                 call.data)
 
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
