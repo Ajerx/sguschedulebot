@@ -1,4 +1,4 @@
-from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.schedulers.blocking import BackgroundScheduler
 import os
 import requests
 import dbconn
@@ -7,7 +7,7 @@ import config
 
 
 def sched():
-    schedule = BlockingScheduler()
+    schedule = BackgroundScheduler()
     @schedule.scheduled_job('cron', hour=4)
     def scheduled_job():
         # update groups table
