@@ -52,7 +52,7 @@ def send_msg(message):
 
 
 @bot.message_handler(regexp='^📝 Сменить группу$')
-def any_msg(message):
+def change_msg(message):
     keyboard = types.InlineKeyboardMarkup(row_width=3)
     y = []
     for key, value in soup.departments.items():
@@ -65,9 +65,12 @@ def any_msg(message):
 @bot.message_handler(commands=["help"])
 @bot.message_handler(content_types='text')
 def any_msg(message):
+    markup = types.ReplyKeyboardMarkup()
+    markup.row('📚 Узнать расписание')
+    markup.row('📝 Сменить группу')
     bot.send_message(message.chat.id, u'Этот бот поможет вам узнать ваше расписание.\n'
                                       u'Чтобы узнать расписание, нажмите "📚 Узнать расписание" и выберите нужную дату.\n'
-                                      u'Вы можете сменить группу, нажав "📝 Сменить группу" и выбрав свой факультет, курс и группу.\n')
+                                      u'Вы можете сменить группу, нажав "📝 Сменить группу" и выбрав свой факультет, курс и группу.\n', reply_markup=markup)
     botan.track(config.botan_key, message.chat.id, message, '/help or other message')
 
 
