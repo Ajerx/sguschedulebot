@@ -4,7 +4,6 @@ import config
 import telebot
 from telebot import types
 import updatebyschedule
-import threading
 import dbconn
 import os
 import soup
@@ -180,17 +179,17 @@ def callback_date(call):
                           text="Готово! Ваш факультет - {0}. Ваша группа - {1}."
                           .format(dep_and_group[0], dep_and_group[1]))
 
-def run_bot():
-    while True:
-        try:
-            bot.polling(none_stop=True)
-        except Exception as e:
-            print(sys.stderr, str(e))
-            time.sleep(10)
+
 
 if __name__ == '__main__':
     createdb.createtables()
     soup.get_groups()
     os.makedirs('./schedule', exist_ok=True)
-    threading.Thread(target=updatebyschedule.sched).start()
-    threading.Thread(target=run_bot).start()
+    updatebyschedule.sched()
+    while True:
+        try:
+            bot.polling(none_stop=True)
+        except Exception as e:
+            print('Error occurred:')
+            print(sys.stderr, str(e))
+            time.sleep(10)
