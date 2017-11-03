@@ -1,4 +1,4 @@
-from apscheduler.schedulers.blocking import BackgroundScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 import os
 import requests
 import dbconn
