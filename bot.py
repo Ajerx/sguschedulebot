@@ -115,33 +115,33 @@ def callback_date(call):
     db = dbconn.sqldb(config.database)
     if call.data == 'today':
         bot.edit_message_text(chat_id=call.message.chat.id,  message_id=call.message.message_id, text =
-                         '*Сегодня {0}, {1}.\n\nТекущая неделя – {2}.\n\n*Ваше расписание:\n\n'.format(
+                         '<b>Сегодня {0}, {1}.\n\nТекущая неделя – {2}.\n\n</b>Ваше расписание:\n\n'.format(
                              date.today().strftime('%d-%m-%Y'),
                              dayweeks[date.today().weekday()],
                              'знаменатель' if date.today().isocalendar()[1] % 2 == 0
                              else 'числитель')
                          + db.get_schedule(call.message.chat.id, date.today().weekday())[0][0],
-                         parse_mode='Markdown')
+                         parse_mode='HTML')
     elif call.data == 'yesterday':
         yesterday = date.today() + timedelta(days=-1)
         bot.edit_message_text(chat_id=call.message.chat.id,  message_id=call.message.message_id, text =
-                         '*Вчерашний день: {1}, {0}.\n\nНеделя – {2}.\n\n*Расписание:\n\n'.format(
+                         '<b>Вчерашний день: {1}, {0}.\n\nНеделя – {2}.\n\n</b>Расписание:\n\n'.format(
                              yesterday.strftime('%d-%m-%Y'),
                              dayweeks[yesterday.weekday()],
                              'знаменатель' if yesterday.isocalendar()[1] % 2 == 0
                              else 'числитель')
                          + db.get_schedule(call.message.chat.id, yesterday.weekday())[0][0],
-                         parse_mode='Markdown')
+                         parse_mode='HTML')
     elif call.data == 'tomorrow':
         tomorrow = date.today() + timedelta(days=1)
         bot.edit_message_text(chat_id=call.message.chat.id,  message_id=call.message.message_id, text =
-                         '*Завтра: {1}, {0}.\n\nНеделя – {2}.\n\n*Расписание:\n\n'.format(
+                         '<b>Завтра: {1}, {0}.\n\nНеделя – {2}.\n\n</b>Расписание:\n\n'.format(
                              tomorrow.strftime('%d-%m-%Y'),
                              dayweeks[tomorrow.weekday()],
                              'знаменатель' if tomorrow.isocalendar()[1] % 2 == 0
                              else 'числитель')
                          + db.get_schedule(call.message.chat.id, tomorrow.weekday())[0][0],
-                         parse_mode='Markdown')
+                         parse_mode='HTML')
     elif call.data == 'dayweek':
         dayweeks_number_eng = {0: 'monday', 1: 'tuesday', 2: 'wednesday', 3: 'thursday', 4: 'friday', 5: 'saturday',
                                6: 'sunday'}
@@ -152,7 +152,7 @@ def callback_date(call):
         keyboard.add(*k)
         bot.edit_message_text(chat_id=call.message.chat.id,  message_id=call.message.message_id, text =
                          'Выберите день недели:',
-                         parse_mode='Markdown')
+                         parse_mode='HTML')
         bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.message_id,
                                       reply_markup=keyboard)
 
