@@ -1,6 +1,7 @@
 import requests
 import xml.sax
 import os.path
+import html
 
 class ExcelHandler(xml.sax.ContentHandler):
     def __init__(self):
@@ -52,21 +53,21 @@ def getschedule(url):
             break
         for j in excelHandler.rows[2:]:
             if excelHandler.rows[2:].index(j) == 0:
-                days[i][1].append('*08:20 – 9:50*\n' + ('_- Занятий нет -_\n\n' if j[i + 1] == '' else j[i + 1]))
+                days[i][1].append('<b>08:20 – 9:50</b>\n' + ('<i>- Занятий нет -</i>\n\n' if j[i + 1] == '' else html.escape(j[i + 1])))
             elif excelHandler.rows[2:].index(j) == 1:
-                days[i][1].append('*10:00 – 11:35*\n' + ('_- Занятий нет -_\n\n' if j[i + 1] == '' else j[i + 1]))
+                days[i][1].append('<b>10:00 – 11:35</b>\n' + ('<i>- Занятий нет -</i>\n\n' if j[i + 1] == '' else html.escape(j[i + 1])))
             elif excelHandler.rows[2:].index(j) == 2:
-                days[i][1].append('*12:05 – 13:40*\n' + ('_- Занятий нет -_\n\n' if j[i + 1] == '' else j[i + 1]))
+                days[i][1].append('<b>12:05 – 13:40</b>\n' + ('<i>- Занятий нет -</i>\n\n' if j[i + 1] == '' else html.escape(j[i + 1])))
             elif excelHandler.rows[2:].index(j) == 3:
-                days[i][1].append('*13:50 – 15:25*\n' + ('_- Занятий нет -_\n\n' if j[i + 1] == '' else j[i + 1]))
+                days[i][1].append('<b>13:50 – 15:25</b>\n' + ('<i>- Занятий нет -</i>\n\n' if j[i + 1] == '' else html.escape(j[i + 1])))
             elif excelHandler.rows[2:].index(j) == 4:
-                days[i][1].append('*15:35 – 17:10*\n' + ('_- Занятий нет -_\n\n' if j[i + 1] == '' else j[i + 1]))
+                days[i][1].append('<b>15:35 – 17:10</b>\n' + ('<i>- Занятий нет -</i>\n\n' if j[i + 1] == '' else html.escape(j[i + 1])))
             elif excelHandler.rows[2:].index(j) == 5:
-                days[i][1].append('*17:20 – 18:40*\n' + ('_- Занятий нет -_\n\n' if j[i + 1] == '' else j[i + 1]))
+                days[i][1].append('<b>17:20 – 18:40</b>\n' + ('<i>- Занятий нет -</i>\n\n' if j[i + 1] == '' else html.escape(j[i + 1])))
             elif excelHandler.rows[2:].index(j) == 6:
-                days[i][1].append('*18:45 – 20:10*\n' + ('_- Занятий нет -_\n\n' if j[i + 1] == '' else j[i + 1]))
+                days[i][1].append('<b>18:45 – 20:10</b>\n' + ('<i>- Занятий нет -</i>\n\n' if j[i + 1] == '' else html.escape(j[i + 1])))
             elif excelHandler.rows[2:].index(j) == 7:
-                days[i][1].append('*20:10 – 21:30*\n' + ('_- Занятий нет -_\n\n' if j[i + 1] == '' else j[i + 1]))
+                days[i][1].append('<b>20:10 – 21:30</b>\n' + ('<i>- Занятий нет -</i>\n\n' if j[i + 1] == '' else html.escape(j[i + 1])))
 
     days = list(''.join(day[1]) for day in days)
 

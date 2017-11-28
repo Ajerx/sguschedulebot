@@ -158,15 +158,10 @@ def callback_date(call):
 
 
     elif call.data in ('monday','tuesday','wednesday','thursday','friday','saturday','sunday'):
-        try:
-            bot.edit_message_text(chat_id=call.message.chat.id,  message_id=call.message.message_id, text =
-                             'Расписание на {}:\n\n'.format(dayweeks_eng_rus[call.data])
-                             + db.get_schedule(call.message.chat.id, dayweeks_eng_number[call.data])[0][0],
-                             parse_mode='Markdown')
-        except:
-            bot.edit_message_text(chat_id=call.message.chat.id,  message_id=call.message.message_id, text =
-                             'Расписание на {}:\n\n'.format(dayweeks_eng_rus[call.data])
-                             + db.get_schedule(call.message.chat.id, dayweeks_eng_number[call.data])[0][0])
+        bot.edit_message_text(chat_id=call.message.chat.id,  message_id=call.message.message_id, text =
+                         'Расписание на {}:\n\n'.format(dayweeks_eng_rus[call.data])
+                         + db.get_schedule(call.message.chat.id, dayweeks_eng_number[call.data])[0][0],
+                         parse_mode='HTML')
 
 @bot.callback_query_handler(func=lambda msg: msg.data in dbconn.sqldb(config.database).select_url_from_groups())  # confirm group
 def callback_date(call):
