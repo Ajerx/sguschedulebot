@@ -189,6 +189,9 @@ if __name__ == '__main__':
     soup.get_groups()
     os.makedirs('./schedule', exist_ok=True)
     updatebyschedule.sched()
+    dbforupdate = dbconn.sqldb(config.database)
+    for url in dbforupdate.get_urls_from_users():
+        dbforupdate.update_schedule_by_url(url)
     while True:
         try:
             bot.polling(none_stop=True)
