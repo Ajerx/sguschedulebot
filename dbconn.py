@@ -120,7 +120,7 @@ class sqldb:
             self.cursor.execute("UPDATE users SET monday = %s,"
                                 "tuesday = %s, wednesday = %s,"
                                 " thursday = %s, friday = %s, saturday = %s, sunday = %s, session = %s WHERE url = %s;",
-                                (*schedule_for_week, url))
+                                (*schedule_for_week, session, url))
             self.connection.commit()
 
 
