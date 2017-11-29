@@ -22,7 +22,7 @@ def createtables():
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT, dep_eng TEXT, group_id TEXT, monday TEXT,
-         tuesday TEXT, wednesday TEXT, thursday TEXT, friday TEXT, saturday TEXT, sunday TEXT, url TEXT);
+         tuesday TEXT, wednesday TEXT, thursday TEXT, friday TEXT, saturday TEXT, sunday TEXT, url TEXT, session TEXT);
     ''')
     connection.commit()
     connection.close()
