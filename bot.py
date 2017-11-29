@@ -15,6 +15,11 @@ import sys
 
 bot = telebot.TeleBot(config.token)
 
+def sendmsgtooneuser():
+    markup = types.ReplyKeyboardMarkup()
+    markup.row('📚 Узнать расписание')
+    markup.row('📝 Сменить группу')
+    bot.send_message(int(sys.argv[1]), sys.argv[2], reply_markup=markup)
 
 @bot.message_handler(commands=["start"])
 def send_welcome(message):
