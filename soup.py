@@ -44,7 +44,6 @@ def get_session(url_group):
         text = 'Расписания еще нет\n'
         lastupdate = soup.find('div', attrs={'class': 'last-update'}).get_text()
         text += lastupdate.strip() + '\n'
-    print(text)
     return text
 
 def get_groups(): # get all groups from parsed site
