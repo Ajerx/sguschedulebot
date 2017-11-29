@@ -39,11 +39,11 @@ def get_session(url_group):
                 text += '<i>' + place.get_text()[:-1].strip() + '</i>\n' + address.get_text().strip() + '\n\n'
                 counter = 1
         lastupdate = soup.find('div', attrs={'class': 'last-update'}).get_text()
-        text = lastupdate.strip() + '\n' + text
+        text = lastupdate.strip() + '\n\n' + text
     except:
         text = 'Расписания еще нет\n'
         lastupdate = soup.find('div', attrs={'class': 'last-update'}).get_text()
-        text += lastupdate.strip()
+        text += lastupdate.strip() + '\n'
     print(text)
     return text
 
