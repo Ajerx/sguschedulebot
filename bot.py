@@ -61,9 +61,9 @@ def send_session(message):
         bot.send_message(message.chat.id, 'Я еще не знаю номер вашей группы.\nНажмите на кнопку "📝 Сменить группу", чтобы задать его.')
     else:
         try:
-            url = db.select_url_by_id(message.chat.id)
+            url = db.select_url_by_id(message.chat.id)[0]
             session = soup.get_session(url)
-            db.update_session(message.chat.id, session)
+            db.update_session(message.chat.id, session)[0]
         except:
             session = db.select_session(message.chat.id)
         bot.send_message(message.chat.id, '<b>Сегодня: ' + date.today().strftime('%d-%m-%Y') +
