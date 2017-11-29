@@ -21,6 +21,14 @@ def sendmsgtooneuser():
     markup.row('📝 Сменить группу')
     bot.send_message(int(sys.argv[1]), sys.argv[2], reply_markup=markup)
 
+def sendmsgtoallusers():
+    markup = types.ReplyKeyboardMarkup()
+    markup.row('📚 Занятия', '📅 Сессия')
+    markup.row('📝 Сменить группу')
+    for user in dbconn.sqldb(config.database).get_all_ids():
+        bot.send_message(int(user), sys.argv[1], reply_markup=markup)
+        time.sleep(1)
+
 @bot.message_handler(commands=["start"])
 def send_welcome(message):
     markup = types.ReplyKeyboardMarkup()

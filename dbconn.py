@@ -148,5 +148,13 @@ class sqldb:
 
             self.connection.commit()
 
+    def get_all_ids(self):
+        with self.connection:
+            self.cursor.execute("SELECT DISTINCT id FROM users;")
+            ids = []
+            for i in self.cursor.fetchall():
+                ids.append(i[0])
+            return ids
+
     def close(self):
         self.connection.close()
