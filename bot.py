@@ -63,9 +63,9 @@ def send_session(message):
         try:
             url = db.select_url_by_id(message.chat.id)[0]
             session = soup.get_session(url)
-            db.update_session(message.chat.id, session)[0]
+            db.update_session(message.chat.id, session)
         except:
-            session = db.select_session(message.chat.id)
+            session = db.select_session(message.chat.id)[0]
         bot.send_message(message.chat.id, '<b>Сегодня: ' + date.today().strftime('%d-%m-%Y') +
                          '</b>\n\nРасписание сессии:\n\n' + session, parse_mode='HTML')
     botan.track(config.botan_key, message.chat.id, message, '📅 Сессия')
