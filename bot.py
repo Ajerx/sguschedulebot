@@ -28,6 +28,7 @@ def sendmsgtoallusers():
     for user in dbconn.sqldb(config.database).get_all_ids():
         bot.send_message(int(user), sys.argv[1], reply_markup=markup)
         time.sleep(0.1)
+    print('Done! All messages were sent')
 
 @bot.message_handler(commands=["start"])
 def send_welcome(message):
