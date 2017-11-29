@@ -17,14 +17,14 @@ bot = telebot.TeleBot(config.token)
 
 def sendmsgtooneuser():
     markup = types.ReplyKeyboardMarkup()
-    markup.row('📚 Узнать расписание')
+    markup.row('📚 Занятия', '📅 Сессия')
     markup.row('📝 Сменить группу')
     bot.send_message(int(sys.argv[1]), sys.argv[2], reply_markup=markup)
 
 @bot.message_handler(commands=["start"])
 def send_welcome(message):
     markup = types.ReplyKeyboardMarkup()
-    markup.row('📚 Узнать расписание')
+    markup.row('📚 Занятия', '📅 Сессия')
     markup.row('📝 Сменить группу')
     bot.send_message(message.chat.id, 'Привет. '
     'Это бот, который поможет узнать свое расписание. Он создан для студентов дневного отделения Саратовского Государственного Университета.'
@@ -39,7 +39,7 @@ def send_welcome(message):
     bot.send_message(message.chat.id, "Выберите свой факультет:", reply_markup=keyboard)
     botan.track(config.botan_key, message.chat.id, message, '/start')
 
-@bot.message_handler(regexp='^📚 Узнать расписание$')
+@bot.message_handler(regexp='^📚 Занятия$')
 def send_msg(message):
     db = dbconn.sqldb(config.database)
     if not db.check_user(message.chat.id):
@@ -54,7 +54,21 @@ def send_msg(message):
         bot.send_message(message.chat.id, "Выберите день, расписание которого надо узнать:", reply_markup=keyboard)
     botan.track(config.botan_key, message.chat.id, message, '📚 Узнать расписание')
 
-
+@bot.message_handler(regexp='^📅 Сессия$')
+def send_session(message):
+    db = dbconn.sqldb(config.database)
+    if not db.check_user(message.chat.id):
+        bot.send_message(message.chat.id, 'Я еще не знаю номер вашей группы.\nНажмите на кнопку "📝 Сменить группу", чтобы задать его.')
+    else:
+        try:
+            url = db.select_url_by_id(message.chat.id)
+            session = soup.get_session(url)
+            db.update_session(message.chat.id, session)
+        except:
+            session = db.select_session(message.chat.id)
+        bot.send_message(message.chat.id, '<b>Сегодня: ' + date.today().strftime('%d-%m-%Y') +
+                         '</b>\n\nРасписание сессии:\n\n' + session, parse_mode='HTML')
+    botan.track(config.botan_key, message.chat.id, message, '📅 Сессия')
 
 @bot.message_handler(regexp='^📝 Сменить группу$')
 def change_msg(message):
@@ -71,10 +85,11 @@ def change_msg(message):
 @bot.message_handler(content_types='text')
 def any_msg(message):
     markup = types.ReplyKeyboardMarkup()
-    markup.row('📚 Узнать расписание')
+    markup.row('📚 Занятия', '📅 Сессия')
     markup.row('📝 Сменить группу')
     bot.send_message(message.chat.id, u'Этот бот поможет вам узнать ваше расписание.\n'
-                                      u'Чтобы узнать расписание, нажмите "📚 Узнать расписание" и выберите нужную дату.\n'
+                                      u'Чтобы узнать расписание занятий, нажмите "📚 Занятия" и выберите нужную дату.\n'
+                                      u'Чтобы узнать расписание сессии, нажмите "📅 Сессия".\n'
                                       u'Вы можете сменить группу, нажав "📝 Сменить группу" и выбрав свой факультет, курс и группу.\n', reply_markup=markup)
     botan.track(config.botan_key, message.chat.id, message, '/help or other message')
 

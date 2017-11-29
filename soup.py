@@ -17,6 +17,36 @@ courses = {'1 курс':'1course', '2 курс':'2course',
            '5 курс':'5course', 'ДРУГОЕ':'OTHER'
            }
 
+def get_session(url_group):
+    url = "http://www.sgu.ru{}#session".format(url_group)
+    f = request.urlopen(url)
+    soup = BeautifulSoup(f.read(), 'html.parser')
+    counter = 1
+    text = ''
+    try:
+        for i in soup.find('table', id='session').find_all('tr'):
+            if counter == 1:
+                date, time, exam, subject = i.find_all('td')
+                text += '<b>' + date.get_text()[:-1].strip() + '</b>, ' + \
+                        time.get_text().strip() + '\n<i>' + exam.get_text().strip() + '</i>\n' + subject.get_text().strip() + '\n'
+                counter += 1
+            elif counter == 2:
+                teacher, name = i.find_all('td')
+                text += '<i>' + teacher.get_text()[:-1].strip() + '</i>\n' + name.get_text().strip() + '\n'
+                counter += 1
+            elif counter == 3:
+                place, address = i.find_all('td')
+                text += '<i>' + place.get_text()[:-1].strip() + '</i>\n' + address.get_text().strip() + '\n\n'
+                counter = 1
+        lastupdate = soup.find('div', attrs={'class': 'last-update'}).get_text()
+        text = lastupdate.strip() + '\n' + text
+    except:
+        text = 'Расписания еще нет\n'
+        lastupdate = soup.find('div', attrs={'class': 'last-update'}).get_text()
+        text += lastupdate.strip()
+    print(text)
+    return text
+
 def get_groups(): # get all groups from parsed site
 
     db = dbconn.sqldb(config.database)

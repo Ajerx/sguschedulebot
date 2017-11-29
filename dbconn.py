@@ -1,6 +1,7 @@
 import xmlparser
 import psycopg2
 import urllib.parse as urlparse
+import soup
 
 class sqldb:
 
@@ -35,6 +36,23 @@ class sqldb:
             data = self.cursor.fetchone()
             return data
 
+    def select_url_by_id(self, user_id):
+        with self.connection:
+            self.cursor.execute('SELECT url FROM users WHERE id = %s', (user_id,))
+            data = self.cursor.fetchone()
+            return data
+
+    def select_session(self, user_id):
+        with self.connection:
+            self.cursor.execute('SELECT session FROM users WHERE id = %s', (user_id,))
+            data = self.cursor.fetchone()
+            return data
+
+    def update_session(self, user_id, session):
+        with self.connection:
+            self.cursor.execute('UPDATE users SET session = %s WHERE id = %s', (session, user_id))
+            self.connection.commit()
+
     def select_url_from_groups(self):
         with self.connection:
             self.cursor.execute('SELECT DISTINCT url FROM groups;')
@@ -64,22 +82,26 @@ class sqldb:
     def insert_user_schedule(self, user_id, name, url):
         schedule_for_week = xmlparser.getschedule(url)
 
+        session = soup.get_session(url)
+
         department_and_group = self.select_by_url(url)[0:2]
 
         with self.connection:
-            self.cursor.execute("INSERT INTO users VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);",
-                                (user_id, name, *department_and_group, *schedule_for_week, url))
+            self.cursor.execute("INSERT INTO users VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);",
+                                (user_id, name, *department_and_group, *schedule_for_week, url, session))
             self.connection.commit()
 
     def update_user_schedule(self, user_id, url):
         schedule_for_week = xmlparser.getschedule(url)
 
+        session = soup.get_session(url)
+
         department_and_group = self.select_by_url(url)[0:2]
         with self.connection:
             self.cursor.execute("UPDATE users SET dep_eng = %s, group_id = %s, monday = %s,"
                                 "tuesday = %s, wednesday = %s,"
-                                " thursday = %s, friday = %s, saturday = %s, sunday = %s, url = %s WHERE id = %s;",
-                                (*department_and_group, *schedule_for_week, url, user_id))
+                                " thursday = %s, friday = %s, saturday = %s, sunday = %s, url = %s, session = %s WHERE id = %s;",
+                                (*department_and_group, *schedule_for_week, url, session, user_id))
             self.connection.commit()
 
     def get_schedule(self, user_id, dayweek):
@@ -91,10 +113,13 @@ class sqldb:
 
     def update_schedule_by_url(self, url):
         schedule_for_week = xmlparser.getschedule(url)
+
+        session = soup.get_session(url)
+
         with self.connection:
             self.cursor.execute("UPDATE users SET monday = %s,"
                                 "tuesday = %s, wednesday = %s,"
-                                " thursday = %s, friday = %s, saturday = %s, sunday = %s WHERE url = %s;",
+                                " thursday = %s, friday = %s, saturday = %s, sunday = %s, session = %s WHERE url = %s;",
                                 (*schedule_for_week, url))
             self.connection.commit()
 
