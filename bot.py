@@ -26,7 +26,11 @@ def sendmsgtoallusers():
     markup.row('📚 Занятия', '📅 Сессия')
     markup.row('📝 Сменить группу')
     for user in dbconn.sqldb(config.database).get_all_ids():
-        bot.send_message(int(user), sys.argv[1], reply_markup=markup)
+        try:
+            bot.send_message(int(user), sys.argv[1], reply_markup=markup)
+            print('Sent')
+        except:
+            print("Didn't send")
         time.sleep(0.1)
     print('Done! All messages were sent')
 
