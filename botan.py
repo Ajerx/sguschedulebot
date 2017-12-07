@@ -28,8 +28,14 @@ def track(token, uid, message, name='Message'):
         # set up for a retry, or continue in a retry loop
         print('ERROR IN requests.exceptions.Timeout :')
         return False
-    except (requests.exceptions.RequestException, ValueError) as e:
-        # catastrophic error
-        print('ANOTHER ERROR :')
+    except requests.exceptions.RequestException as e:
+        print('ERROR IN requests.exceptions.RequestException :')
         print(e)
+        return False
+    except ValueError as e:
+        print('ERROE IN ValueError :')
+        print(e)
+        print(message)
+        print(make_json(message))
+        print(type(make_json(message)))
         return False
