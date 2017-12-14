@@ -20,7 +20,7 @@ def track(token, uid, message, name='Message'):
         r = requests.post(
             TRACK_URL,
             params={"token": token, "uid": uid, "name": name},
-            data=make_json(message),
+            data=json.dumps(make_json(message)),
             headers={'Content-type': 'application/json'},
         )
         return r.json()
