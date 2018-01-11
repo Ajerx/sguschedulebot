@@ -24,22 +24,25 @@ def get_session(url_group):
     counter = 1
     text = ''
     try:
-        for i in soup.find('table', id='session').find_all('tr'):
-            if counter == 1:
-                date, time, exam, subject = i.find_all('td')
-                text += '<b>' + date.get_text()[:-1].strip() + '</b>, ' + \
-                        time.get_text().strip() + '\n<i>' + exam.get_text().strip() + '</i>\n' + subject.get_text().strip() + '\n'
-                counter += 1
-            elif counter == 2:
-                teacher, name = i.find_all('td')
-                text += '<i>' + teacher.get_text()[:-1].strip() + '</i>\n' + name.get_text().strip() + '\n'
-                counter += 1
-            elif counter == 3:
-                place, address = i.find_all('td')
-                text += '<i>' + place.get_text()[:-1].strip() + '</i>\n' + address.get_text().strip() + '\n\n'
-                counter = 1
-        lastupdate = soup.find('div', attrs={'class': 'last-update'}).get_text()
-        text = lastupdate.strip() + '\n\n' + text
+        if soup.find('table', id='session') is not None:
+            for i in soup.find('table', id='session').find_all('tr'):
+                if counter == 1:
+                    date, time, exam, subject = i.find_all('td')
+                    text += '<b>' + date.get_text()[:-1].strip() + '</b>, ' + \
+                            time.get_text().strip() + '\n<i>' + exam.get_text().strip() + '</i>\n' + subject.get_text().strip() + '\n'
+                    counter += 1
+                elif counter == 2:
+                    teacher, name = i.find_all('td')
+                    text += '<i>' + teacher.get_text()[:-1].strip() + '</i>\n' + name.get_text().strip() + '\n'
+                    counter += 1
+                elif counter == 3:
+                    place, address = i.find_all('td')
+                    text += '<i>' + place.get_text()[:-1].strip() + '</i>\n' + address.get_text().strip() + '\n\n'
+                    counter = 1
+            lastupdate = soup.find('div', attrs={'class': 'last-update'}).get_text()
+            text = lastupdate.strip() + '\n\n' + text
+        else:
+            text = 'Расписания еще нет\n'
     except:
         text = 'Расписания еще нет\n'
         lastupdate = soup.find('div', attrs={'class': 'last-update'}).get_text()
