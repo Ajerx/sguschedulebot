@@ -191,10 +191,14 @@ def callback_date(call):
 
 
     elif call.data in ('monday','tuesday','wednesday','thursday','friday','saturday','sunday'):
-        bot.edit_message_text(chat_id=call.message.chat.id,  message_id=call.message.message_id, text =
-                         'Расписание на {}:\n\n'.format(dayweeks_eng_rus[call.data])
-                         + db.get_schedule(call.message.chat.id, dayweeks_eng_number[call.data])[0][0],
-                         parse_mode='HTML')
+        try:
+            bot.edit_message_text(chat_id=call.message.chat.id,  message_id=call.message.message_id, text =
+                             'Расписание на {}:\n\n'.format(dayweeks_eng_rus[call.data])
+                             + db.get_schedule(call.message.chat.id, dayweeks_eng_number[call.data])[0][0],
+                             parse_mode='HTML')
+        except Exception as excep:
+            print('Error in edit_message_text: ')
+            print(str(excep))
 
 @bot.callback_query_handler(func=lambda msg: msg.data in dbconn.sqldb(config.database).select_url_from_groups())  # confirm group
 def callback_date(call):
@@ -210,10 +214,13 @@ def callback_date(call):
         db.insert_user_schedule(call.message.chat.id,
                                 call.from_user.first_name + ("" if call.from_user.last_name is None else " " + call.from_user.last_name) + ("" if call.from_user.username is None else "  @" + call.from_user.username),
                                 call.data)
-
-    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
-                          text="Готово! Ваш факультет - {0}. Ваша группа - {1}."
-                          .format(dep_and_group[0], dep_and_group[1]))
+    try:
+        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
+                              text="Готово! Ваш факультет - {0}. Ваша группа - {1}."
+                              .format(dep_and_group[0], dep_and_group[1]))
+    except Exception as excep:
+        print('Error in edit_message_text: ')
+        print(str(excep))
 
 
 
