@@ -87,7 +87,7 @@ class sqldb:
         department_and_group = self.select_by_url(url)[0:2]
 
         with self.connection:
-            self.cursor.execute("INSERT INTO users VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);",
+            self.cursor.execute("INSERT INTO users VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) ON CONFLICT (id) DO UPDATE SET name = Excluded.name;",
                                 (user_id, name, *department_and_group, *schedule_for_week, url, session))
             self.connection.commit()
 
