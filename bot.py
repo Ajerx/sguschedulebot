@@ -12,7 +12,7 @@ import time
 import sys
 
 
-bot = telebot.TeleBot(config.token)
+bot = telebot.TeleBot(config.token, threaded=False)
 
 def sendmsgtooneuser():
     markup = types.ReplyKeyboardMarkup()
@@ -227,6 +227,7 @@ if __name__ == '__main__':
         try:
             bot.polling(none_stop=True)
         except Exception as e:
+            bot.stop_polling()
             print('Error occurred:')
             print(sys.stderr, str(e))
             time.sleep(10)
