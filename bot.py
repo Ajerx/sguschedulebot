@@ -138,12 +138,12 @@ def callback_date(call):
     bot.edit_message_reply_markup(chat_id=call.message.chat.id, message_id=call.message.message_id, reply_markup=keyboard)
 
 @bot.callback_query_handler(func=lambda msg: msg.data in ('today','yesterday','tomorrow',
-                                                          'dayweek','monday','tuesday','wednesday','thursday','friday','saturday','sunday'))
+                                                          'dayweek','monday','tuesday','wednesday','thursday','friday','saturday'))
 def callback_date(call):
-    dayweeks = {0: 'понедельник', 1: 'вторник', 2: 'среда', 3: 'четверг', 4: 'пятница', 5: 'суббота', 6: 'воскресенье'}
-    dayweeks_eng_number = {'monday': 0, 'tuesday': 1, 'wednesday' : 2, 'thursday': 3, 'friday':4, 'saturday':5, 'sunday':6}
+    dayweeks = {0: 'понедельник', 1: 'вторник', 2: 'среда', 3: 'четверг', 4: 'пятница', 5: 'суббота'}
+    dayweeks_eng_number = {'monday': 0, 'tuesday': 1, 'wednesday' : 2, 'thursday': 3, 'friday':4, 'saturday':5}
     dayweeks_eng_rus = {'monday': 'понедельник', 'tuesday': 'вторник',
-                    'wednesday': 'среду', 'thursday': 'четверг', 'friday': 'пятницу', 'saturday': 'субботу', 'sunday': 'воскресенье'}
+                    'wednesday': 'среду', 'thursday': 'четверг', 'friday': 'пятницу', 'saturday': 'субботу'}
 
     db = dbconn.sqldb(config.database)
     if call.data == 'today':
@@ -176,8 +176,7 @@ def callback_date(call):
                          + db.get_schedule(call.message.chat.id, tomorrow.weekday())[0][0],
                          parse_mode='HTML')
     elif call.data == 'dayweek':
-        dayweeks_number_eng = {0: 'monday', 1: 'tuesday', 2: 'wednesday', 3: 'thursday', 4: 'friday', 5: 'saturday',
-                               6: 'sunday'}
+        dayweeks_number_eng = {0: 'monday', 1: 'tuesday', 2: 'wednesday', 3: 'thursday', 4: 'friday', 5: 'saturday'}
         keyboard = types.InlineKeyboardMarkup(row_width=3)
         k = []
         for i in dayweeks.keys():
@@ -190,7 +189,7 @@ def callback_date(call):
                                       reply_markup=keyboard)
 
 
-    elif call.data in ('monday','tuesday','wednesday','thursday','friday','saturday','sunday'):
+    elif call.data in ('monday','tuesday','wednesday','thursday','friday','saturday'):
         try:
             bot.edit_message_text(chat_id=call.message.chat.id,  message_id=call.message.message_id, text =
                              'Расписание на {}:\n\n'.format(dayweeks_eng_rus[call.data])
