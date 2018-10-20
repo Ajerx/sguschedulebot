@@ -50,7 +50,7 @@ def send_welcome(message):
 
     keyboard.add(*y)
     bot.send_message(message.chat.id, "Выберите свой факультет:", reply_markup=keyboard)
-    dashbot.track_message(message)
+    dashbot.track(message)
 
 @bot.message_handler(regexp='^📚 Занятия$')
 def send_msg(message):
@@ -65,7 +65,7 @@ def send_msg(message):
         anotherdayweek = types.InlineKeyboardButton(text="День недели", callback_data="dayweek")
         keyboard.add(today, yesterday, tomorrow, anotherdayweek)
         bot.send_message(message.chat.id, "Выберите день, расписание которого надо узнать:", reply_markup=keyboard)
-    dashbot.track_event(message)
+    dashbot.track(message)
 
 @bot.message_handler(regexp='^📅 Сессия$')
 def send_session(message):
@@ -81,7 +81,7 @@ def send_session(message):
             session = db.select_session(message.chat.id)[0]
         bot.send_message(message.chat.id, '<b>Сегодня: ' + date.today().strftime('%d-%m-%Y') +
                          '</b>\n\nРасписание сессии:\n\n' + session, parse_mode='HTML')
-    dashbot.track_event(message)
+    dashbot.track(message)
 
 @bot.message_handler(regexp='^📝 Сменить группу$')
 def change_msg(message):
@@ -92,7 +92,7 @@ def change_msg(message):
 
     keyboard.add(*y)
     bot.send_message(message.chat.id, "Выберите свой факультет:", reply_markup=keyboard)
-    dashbot.track_event(message)
+    dashbot.track(message)
 
 @bot.message_handler(commands=["help"])
 @bot.message_handler(content_types='text')
@@ -104,7 +104,7 @@ def any_msg(message):
                                       u'Чтобы узнать расписание занятий, нажмите "📚 Занятия" и выберите нужную дату.\n'
                                       u'Чтобы узнать расписание сессии, нажмите "📅 Сессия".\n'
                                       u'Вы можете сменить группу, нажав "📝 Сменить группу" и выбрав свой факультет, курс и группу.\n', reply_markup=markup)
-    dashbot.track_message(message)
+    dashbot.track(message)
 
 @bot.callback_query_handler(func=lambda msg: msg.data in (soup.departments.keys())) #choose course
 def callback_inline(call):
