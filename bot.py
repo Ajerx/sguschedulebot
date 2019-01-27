@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 from datetime import date, timedelta
 import config
 import telebot
@@ -139,7 +139,7 @@ def callback_date(call):
 @bot.callback_query_handler(func=lambda msg: msg.data in ('today','yesterday','tomorrow',
                                                           'dayweek','monday','tuesday','wednesday','thursday','friday','saturday'))
 def callback_date(call):
-    dayweeks = {0: 'понедельник', 1: 'вторник', 2: 'среда', 3: 'четверг', 4: 'пятница', 5: 'суббота'}
+    dayweeks = {0: 'понедельник', 1: 'вторник', 2: 'среда', 3: 'четверг', 4: 'пятница', 5: 'суббота', 6: 'воскресенье'}
     dayweeks_eng_number = {'monday': 0, 'tuesday': 1, 'wednesday' : 2, 'thursday': 3, 'friday':4, 'saturday':5}
     dayweeks_eng_rus = {'monday': 'понедельник', 'tuesday': 'вторник',
                     'wednesday': 'среду', 'thursday': 'четверг', 'friday': 'пятницу', 'saturday': 'субботу'}
