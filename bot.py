@@ -179,7 +179,8 @@ def callback_date(call):
         keyboard = types.InlineKeyboardMarkup(row_width=3)
         k = []
         for i in dayweeks.keys():
-            k.append(types.InlineKeyboardButton(text="{}".format(dayweeks[i].capitalize()), callback_data=dayweeks_number_eng[i]))
+		    if i != 6:
+                k.append(types.InlineKeyboardButton(text="{}".format(dayweeks[i].capitalize()), callback_data=dayweeks_number_eng[i]))
         keyboard.add(*k)
         bot.edit_message_text(chat_id=call.message.chat.id,  message_id=call.message.message_id, text =
                          'Выберите день недели:',
