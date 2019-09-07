@@ -166,8 +166,7 @@ def callback_date(call):
         '<b>Сегодня {0}, {1}.\n\nТекущая неделя – {2}.\n\n</b>Ваше расписание:\n\n'.format(
             date.today().strftime('%d-%m-%Y'),
             dayweeks[date.today().weekday()],
-            'знаменатель' if date.today().isocalendar()[1] % 2 == 0
-            else 'числитель')
+            'числитель' if is_week_odd(date.today()) else 'знаменатель')
         + db.get_schedule(call.message.chat.id, date.today().weekday())[0][0],
                               parse_mode='HTML')
     elif call.data == 'yesterday':
@@ -176,8 +175,7 @@ def callback_date(call):
         '<b>Вчерашний день: {1}, {0}.\n\nНеделя – {2}.\n\n</b>Расписание:\n\n'.format(
             yesterday.strftime('%d-%m-%Y'),
             dayweeks[yesterday.weekday()],
-            'знаменатель' if yesterday.isocalendar()[1] % 2 == 0
-            else 'числитель')
+            'числитель' if is_week_odd(yesterday) else 'знаменатель')
         + db.get_schedule(call.message.chat.id, yesterday.weekday())[0][0],
                               parse_mode='HTML')
     elif call.data == 'tomorrow':
@@ -186,8 +184,7 @@ def callback_date(call):
         '<b>Завтра: {1}, {0}.\n\nНеделя – {2}.\n\n</b>Расписание:\n\n'.format(
             tomorrow.strftime('%d-%m-%Y'),
             dayweeks[tomorrow.weekday()],
-            'знаменатель' if tomorrow.isocalendar()[1] % 2 == 0
-            else 'числитель')
+            'числитель' if is_week_odd(tomorrow) else 'знаменатель')
         + db.get_schedule(call.message.chat.id, tomorrow.weekday())[0][0],
                               parse_mode='HTML')
     elif call.data == 'dayweek':
@@ -240,6 +237,23 @@ def callback_date(call):
     except Exception as excep:
         print('Error in edit_message_text: ')
         print(str(excep))
+
+
+def is_week_odd(input_date):
+    month = input_date.month
+    if month < 9:
+        year = input_date.year - 1
+    else:
+        year = input_date.year
+    first_weekday_of_september = date(year, 9, 1)
+    one_day = timedelta(1)
+    while first_weekday_of_september.isoweekday() > 5:
+        first_weekday_of_september += one_day
+    result = (input_date - first_weekday_of_september).days // 7
+    if result % 2 == 0:
+        return True
+    else:
+        return False
 
 
 if __name__ == '__main__':
