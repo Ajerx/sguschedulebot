@@ -249,7 +249,11 @@ def is_week_odd(input_date):
     one_day = timedelta(1)
     while first_weekday_of_september.isoweekday() > 5:
         first_weekday_of_september += one_day
-    result = (input_date - first_weekday_of_september).days // 7
+    # get the first Monday of the academic year
+    first_monday_of_the_academic_year = first_weekday_of_september
+    while first_monday_of_the_academic_year.isoweekday() != 1:
+        first_monday_of_the_academic_year -= one_day
+    result = (input_date - first_monday_of_the_academic_year).days // 7
     if result % 2 == 0:
         return True
     else:
